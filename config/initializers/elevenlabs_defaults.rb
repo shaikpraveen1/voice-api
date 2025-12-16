@@ -1,0 +1,1 @@
+Rails.application.config.x.elevenlabs_default_voice_id = ENV["ELEVENLABS_DEFAULT_VOICE_ID"] || "21m00Tcm4TlvDq8ikWAM"

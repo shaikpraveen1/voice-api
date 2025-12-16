@@ -1,0 +1,34 @@
+<h1>Generate Voice</h1>
+
+<%= form_with url: voice_requests_path, method: :post, local: true do |f| %>
+  <div>
+    <%= label_tag :text, "Enter text" %><br>
+    <%= text_area_tag :text, nil, rows: 4, cols: 60 %>
+  </div>
+  <div>
+    <%= submit_tag "Generate" %>
+  </div>
+<% end %>
+
+<p>
+  <%= link_to "View full history", voice_requests_path %>
+</p>
+
+<h2>Recent generations</h2>
+<ul>
+  <% @recent_requests.each do |req| %>
+    <li>
+      <%= link_to req.id, voice_request_path(req) %> -
+      <%= req.status %> -
+      <%= time_ago_in_words(req.created_at) %> ago
+
+      <% if req.completed? && req.audio_url.present? %>
+        <% play_url = presigned_url_for(req.audio_url) %>
+        <% if play_url.present? %>
+          <br>
+          <audio controls src="<%= play_url %>" style="width: 250px;"></audio>
+        <% end %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

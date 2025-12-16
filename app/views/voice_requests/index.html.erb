@@ -1,0 +1,34 @@
+<h1>Voice History</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Audio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @voice_requests.each do |req| %>
+      <tr>
+        <td><%= link_to req.id, voice_request_path(req) %></td>
+        <td><%= req.status %></td>
+        <td><%= l req.created_at, format: :short %></td>
+        <td>
+          <% if req.completed? && @audio_play_urls[req.id].present? %>
+            <audio controls src="<%= @audio_play_urls[req.id] %>" style="width: 200px;"></audio>
+          <% elsif req.failed? %>
+            Failed
+          <% else %>
+            Processing
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @voice_requests %>
+
+<p><%= link_to "Back to generator", root_path %></p>

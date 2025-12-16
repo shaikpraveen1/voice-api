@@ -1,0 +1,17 @@
+<h1>Voice Request <%= @voice_request.id %></h1>
+
+<p>Status: <%= @voice_request.status %></p>
+
+<p>Text:</p>
+<pre><%= @voice_request.text %></pre>
+
+<% if @voice_request.completed? && @audio_play_url.present? %>
+  <h2>Playback</h2>
+  <audio controls src="<%= @audio_play_url %>"></audio>
+<% elsif @voice_request.failed? %>
+  <p style="color: red;">Failed: <%= @voice_request.error_message %></p>
+<% else %>
+  <p>Processing… Refresh this page in a few seconds.</p>
+<% end %>
+
+<p><%= link_to "Back", root_path %></p>
