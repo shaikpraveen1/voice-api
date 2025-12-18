@@ -10,12 +10,13 @@ class VoiceRequestsController < ApplicationController
     text = params[:text].to_s.strip
 
     if text.blank?
-      @voice_request = VoiceRequest.new(text: text)
+      @voice_request   = VoiceRequest.new(text: text)
       @recent_requests = VoiceRequest.order(created_at: :desc).limit(10)
+      @error_message   = "Text can't be blank"
 
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { error: "Text can't be blank" }, status: :unprocessable_entity }
+        format.json { render json: { error: @error_message }, status: :unprocessable_entity }
       end
       return
     end

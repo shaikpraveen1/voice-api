@@ -4,16 +4,13 @@
   <p style="color: red;"><%= @error_message %></p>
 <% end %>
 
-<%= form_with model: (@voice_request || VoiceRequest.new),
-              url: voice_requests_path,
-              method: :post,
-              local: true do |f| %>
+<%= form_with url: voice_requests_path, method: :post, local: true do |f| %>
   <div>
-    <%= f.label :text, "Enter text" %><br>
-    <%= f.text_area :text, rows: 4, cols: 60 %>
+    <%= label_tag :text, "Enter text" %><br>
+    <%= text_area_tag :text, params[:text], rows: 4, cols: 60 %>
   </div>
   <div>
-    <%= f.submit "Generate" %>
+    <%= submit_tag "Generate" %>
   </div>
 <% end %>
 
@@ -23,7 +20,7 @@
 
 <h2>Recent generations</h2>
 <ul>
-  <% @recent_requests.each do |req| %>
+  <% (@recent_requests || []).each do |req| %>
     <li>
       <%= link_to req.id, voice_request_path(req) %> -
       <%= req.status %> -
