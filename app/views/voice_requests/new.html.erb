@@ -1,12 +1,19 @@
 <h1>Generate Voice</h1>
 
-<%= form_with url: voice_requests_path, method: :post, local: true do |f| %>
+<% if @error_message.present? %>
+  <p style="color: red;"><%= @error_message %></p>
+<% end %>
+
+<%= form_with model: (@voice_request || VoiceRequest.new),
+              url: voice_requests_path,
+              method: :post,
+              local: true do |f| %>
   <div>
-    <%= label_tag :text, "Enter text" %><br>
-    <%= text_area_tag :text, nil, rows: 4, cols: 60 %>
+    <%= f.label :text, "Enter text" %><br>
+    <%= f.text_area :text, rows: 4, cols: 60 %>
   </div>
   <div>
-    <%= submit_tag "Generate" %>
+    <%= f.submit "Generate" %>
   </div>
 <% end %>
 
