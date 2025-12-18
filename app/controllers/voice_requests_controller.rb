@@ -10,10 +10,8 @@ class VoiceRequestsController < ApplicationController
     text = params[:text].to_s.strip
 
     if text.blank?
-      flash[:alert] = "Text can't be blank"
-      
       respond_to do |format|
-        format.html { redirect_back(fallback_location: root_path) }
+        format.html { redirect_back(fallback_location: root_path, alert: "Text can't be blank") }
         format.json { render json: { error: "Text can't be blank" }, status: :unprocessable_entity }
       end
       return
@@ -27,7 +25,7 @@ class VoiceRequestsController < ApplicationController
     GenerateVoiceJob.perform_later(@voice_request.id)
 
     respond_to do |format|
-      format.html { redirect_to voice_request_path(@voice_request) }
+      format.html { redirect_to voice_request_path(@voice_request), notice: "Voice generation queued!" }
       format.json { render json: { id: @voice_request.id }, status: :accepted }
     end
   end
