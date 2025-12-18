@@ -30,5 +30,8 @@ module MyVoiceApiV2
     config.api_only = true
     config.active_job.queue_adapter = :sidekiq
     config.middleware.use Rack::Attack
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use ActionDispatch::Flash
   end
 end
