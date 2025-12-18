@@ -6,19 +6,34 @@ class VoiceRequestsController < ApplicationController
     @recent_requests = VoiceRequest.order(created_at: :desc).limit(10)
   end
 
-  def create
-    @voice_request = VoiceRequest.create!(
-      text: params[:text],
-      status: :queued
-    )
+ def create
+  text = params[:text].to_s.strip
 
-    GenerateVoiceJob.perform_later(@voice_request.id)
-
+  if text.blank?
     respond_to do |format|
-      format.html { redirect_to voice_request_path(@voice_request) }
-      format.json { render json: { id: @voice_request.id }, status: :accepted }
+      format.html do
+        flash[:alert] = "Text can't be blank"
+        redirect_back(fallback_location: root_path)
+      end
+      format.json do
+        render json: { error: "Text can't be blank" }, status: :unprocessable_entity
+      end
     end
+    return
   end
+
+  @voice_request = VoiceRequest.create!(
+    text: text,
+    status: :queued
+  )
+
+  GenerateVoiceJob.perform_later(@voice_request.id)
+
+  respond_to do |format|
+    format.html { redirect_to voice_request_path(@voice_request) }
+    format.json { render json: { id: @voice_request.id }, status: :accepted }
+  end
+end
 
   def show
     @voice_request = VoiceRequest.find(params[:id])
