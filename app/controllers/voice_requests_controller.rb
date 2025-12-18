@@ -11,21 +11,16 @@ class VoiceRequestsController < ApplicationController
 
     if text.blank?
       @voice_request = VoiceRequest.new(text: text)
-      @error_message = "Text can't be blank"
+      @recent_requests = VoiceRequest.order(created_at: :desc).limit(10)
 
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { error: @error_message }, status: :unprocessable_entity }
+        format.json { render json: { error: "Text can't be blank" }, status: :unprocessable_entity }
       end
-
       return
     end
 
-    @voice_request = VoiceRequest.create!(
-      text: text,
-      status: :queued
-    )
-
+    @voice_request = VoiceRequest.create!(text: text, status: :queued)
     GenerateVoiceJob.perform_later(@voice_request.id)
 
     respond_to do |format|
