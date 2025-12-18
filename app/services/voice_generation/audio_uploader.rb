@@ -17,6 +17,8 @@ module VoiceGeneration
       # Store plain object URL (or key) in DB
       obj.public_url
     rescue StandardError => e
+      Rails.logger.error("Audio upload error: #{e.class} - #{e.message}")
+      Rails.logger.error(e.backtrace.take(5).join("\n"))
       raise VoiceGeneration::Errors::StorageError, e.message
     end
   end
